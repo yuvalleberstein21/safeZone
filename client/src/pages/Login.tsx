@@ -1,5 +1,7 @@
+import LoginForm from '../components/auth/LoginForm';
+
 const Login = () => {
-  return <h1 className="text-green-600 text-xl">התחברות</h1>;
+  return <LoginForm />;
 };
 
 export default Login;

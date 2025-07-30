@@ -5,7 +5,7 @@ import './App.css';
 function App() {
   const element = useRoutes(routes);
   return (
-    <div className="p-4" dir="rtl">
+    <div className="p-2" dir="rtl">
       {element}
     </div>
   );

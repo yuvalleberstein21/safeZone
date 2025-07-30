@@ -2,16 +2,16 @@ import { AlertTriangle, Shield } from 'lucide-react';
 
 const Home = () => {
   return (
-    <div className="py-3">
-      <div className="text-center">
-        <h2 className="text-3xl font-bold text-gray-900">
-          איך אתה מרגיש/ה עכשיו?
-        </h2>
-        <p className="text-gray-600">
-          לחץ/י על הכפתור המתאים למצב הביטחון האישי שלך
-        </p>
+    <div className="text-center py-2">
+      <h2 className="text-3xl font-bold text-gray-900 mb-2">
+        איך אתה מרגיש/ה עכשיו?
+      </h2>
+      <p className="text-gray-600">
+        לחץ/י על הכפתור המתאים למצב הביטחון האישי שלך
+      </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+      <div className="w-full flex justify-center">
+        <div className="grid grid-cols-1 md:grid-cols-1 gap-4 mt-3 max-w-2xl w-full">
           {/* Safe Button */}
           <button
             // onClick={() => handleSafetyReport(true)}
