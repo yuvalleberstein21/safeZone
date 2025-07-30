@@ -1,21 +1,22 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
-import { insertReport } from '../models/reportsModel';
+import { getReportsWithUserInfo, insertReport } from '../models/reportsModel';
+import { Report } from '../types/report';
 
-export const createReport = async (req: Request, res: Response) => {
+export const createReport = async (
+  req: Request,
+  res: Response
+): Promise<Report | undefined> => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+    res.status(400).json({ errors: errors.array() });
+    return;
   }
 
-  const userId = req.user?.id;
-
-  if (!userId) {
-    return res.status(401).json({ message: 'Unauthorized' });
-  }
+  const userId = req.user!.id;
 
   const { is_safe, latitude, longitude, reason, image_url, area, shift_id } =
-    req.body;
+    req.body as Report;
 
   try {
     const newReport = await insertReport({
@@ -29,11 +30,26 @@ export const createReport = async (req: Request, res: Response) => {
       shift_id,
     });
 
-    return res
-      .status(201)
-      .json({ message: 'Report created', report: newReport });
+    res.status(201).json({ message: 'Report created', report: newReport });
+    return;
   } catch (error) {
     console.error('Error creating report:', error);
-    return res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: 'Server error' });
+    return;
+  }
+};
+
+export const getAllReports = async (
+  req: Request,
+  res: Response
+): Promise<Report | undefined> => {
+  try {
+    const reports: Report[] = await getReportsWithUserInfo();
+    res.json({ reports });
+    return;
+  } catch (error) {
+    console.error('Error fetching reports:', error);
+    res.status(500).json({ message: 'Server error' });
+    return;
   }
 };
