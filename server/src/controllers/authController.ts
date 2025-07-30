@@ -2,9 +2,12 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { createUser, findUserByUsername } from '../models/userModel';
-import { RegisterInput } from '../types/user';
+import { RegisterInput, User } from '../types/user';
 
-export const registerUser = async (req: Request, res: Response) => {
+export const registerUser = async (
+  req: Request,
+  res: Response
+): Promise<RegisterInput | undefined> => {
   const {
     username,
     name,
@@ -43,4 +46,66 @@ export const registerUser = async (req: Request, res: Response) => {
     console.error(err);
     res.status(500).json({ message: 'Registration failed.' });
   }
+};
+
+export const loginUser = async (
+  req: Request,
+  res: Response
+): Promise<User | undefined> => {
+  const { username, password } = req.body as User;
+
+  if (!username || !password) {
+    res.status(400).json({ message: 'Username and password are required' });
+    return;
+  }
+
+  try {
+    const user = await findUserByUsername(username);
+    if (!user) {
+      res.status(401).json({ message: 'Invalid username or password' });
+      return;
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      res.status(401).json({ message: 'Invalid username or password' });
+      return;
+    }
+
+    const token = jwt.sign(
+      { userId: user.id, role: user.role },
+      process.env.JWT_SECRET as string,
+      { expiresIn: '7d' }
+    );
+
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    res.status(200).json({
+      message: 'Login successful',
+      user: {
+        id: user.id,
+        name: user.name,
+        role: user.role,
+        area: user.area,
+      },
+    });
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+export const logoutUser = (req: Request, res: Response) => {
+  res.clearCookie('token', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+  });
+
+  res.status(200).json({ message: 'Logged out successfully' });
 };
