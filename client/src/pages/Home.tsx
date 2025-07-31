@@ -11,7 +11,7 @@ const Home = () => {
       </p>
 
       <div className="w-full flex justify-center">
-        <div className="grid grid-cols-1 md:grid-cols-1 gap-4 mt-3 max-w-2xl w-full">
+        <div className="grid grid-cols-1 md:grid-cols-1 gap-4 mt-3  mx-4 max-w-2xl w-full">
           {/* Safe Button */}
           <button
             // onClick={() => handleSafetyReport(true)}

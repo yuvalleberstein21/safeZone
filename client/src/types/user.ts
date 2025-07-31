@@ -4,5 +4,8 @@ export interface userLogin {
 }
 
 export interface User {
-  role: 'employee' | 'admin';
+  id: string;
+  name: string;
+  role: 'manager' | 'user';
+  // אולי גם: email, fullName, etc
 }

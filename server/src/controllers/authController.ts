@@ -55,20 +55,20 @@ export const loginUser = async (
   const { username, password } = req.body as User;
 
   if (!username || !password) {
-    res.status(400).json({ message: 'Username and password are required' });
+    res.status(400).json({ message: 'אנא מלא/י את כל השדות' });
     return;
   }
 
   try {
     const user = await findUserByUsername(username);
     if (!user) {
-      res.status(401).json({ message: 'Invalid username or password' });
+      res.status(401).json({ message: 'שם משתמש או סיסמא שגויים' });
       return;
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      res.status(401).json({ message: 'Invalid username or password' });
+      res.status(401).json({ message: 'שם משתמש או סיסמא שגויים' });
       return;
     }
 

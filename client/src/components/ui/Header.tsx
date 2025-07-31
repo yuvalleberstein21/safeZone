@@ -1,24 +1,36 @@
 import { User, LogOut, MapPin, Shield } from 'lucide-react';
-import { useState } from 'react';
+
 import { useCurrentUser } from '../../hooks/useCurrentUser';
+import Loader from './Loader';
+import { useLogout } from '../../hooks/useLogout';
+import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
   const { data: user, isLoading, error } = useCurrentUser();
-  const [isEmployee, setIsEmployee] = useState<boolean>(true);
 
-  console.log(user);
+  const navigate = useNavigate();
+  const { mutate: logout, isPending } = useLogout();
 
-  if (isLoading) return <p>טוען...</p>;
-  if (error) return <p>שגיאה בטעינת נתוני משתמש</p>;
+  const handleLogout = () => {
+    logout(undefined, {
+      onSuccess: () => {
+        navigate('/login');
+      },
+    });
+  };
+
+  if (isLoading) return <Loader />;
+  if (error || !user) return null;
+
   return (
     <div className="bg-white shadow-sm">
-      {isEmployee ? (
+      {user?.role !== 'manager' ? (
         <div className="max-w-2xl mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center space-x-3">
             <User className="h-8 w-8 text-blue-600" />
             <div>
               <h1 className="font-bold text-gray-900">
-                {user.user?.name || 'שלום אורח'}
+                {user?.name || 'שלום אורח'}
               </h1>
               <p className="flex items-center text-md text-gray-600">
                 מגדל העמק
@@ -27,7 +39,8 @@ const Header = () => {
             </div>
           </div>
           <button
-            // onClick={() => setCurrentUser(null)}
+            onClick={handleLogout}
+            disabled={isPending}
             className="text-gray-600 hover:text-gray-900"
           >
             <LogOut className="h-5 w-5" />
@@ -44,7 +57,8 @@ const Header = () => {
               </div>
             </div>
             <button
-              // onClick={() => setCurrentUser(null)}
+              onClick={handleLogout}
+              disabled={isPending}
               className="flex items-center space-x-2 text-gray-600 hover:text-gray-900"
             >
               <LogOut className="h-4 w-4" />

@@ -1,15 +1,15 @@
 import { Shield } from 'lucide-react';
 import { useState } from 'react';
 import { useLogin } from '../../hooks/useLogin';
-
 import { useNavigate } from 'react-router-dom';
 import { useCurrentUser } from '../../hooks/useCurrentUser';
+import { toast } from 'react-hot-toast';
 
 const LoginForm = () => {
   const [loginForm, setLoginForm] = useState({ username: '', password: '' });
   const navigate = useNavigate();
 
-  const { mutate, isPending, error } = useLogin();
+  const { mutate, isPending } = useLogin();
   const { refetch } = useCurrentUser();
 
   const handleLogin = () => {
@@ -19,17 +19,23 @@ const LoginForm = () => {
 
         if (!user) return;
 
+        toast.success(`שלום ${user.name}! התחברת בהצלחה`);
+
         if (user.role === 'manager') {
-          navigate('/dashboard');
+          navigate('/manager-dashboard');
         } else {
           navigate('/');
         }
       },
+      onError: (err: any) => {
+        const msg = err.response?.data?.message || 'התחברות נכשלה. נסה שוב.';
+        toast.error(msg);
+      },
     });
   };
   return (
-    <div className="flex justify-center items-center">
-      <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
+    <div className="flex justify-center items-center h-screen">
+      <div className="bg-white rounded-2xl shadow-xl p-8 w-full mx-4 max-w-md">
         <div className="text-center mb-8">
           <Shield className="mx-auto h-16 w-16 text-blue-600 mb-4" />
           <h1 className="text-2xl font-bold text-gray-900 mb-2">
@@ -49,7 +55,7 @@ const LoginForm = () => {
               onChange={(e) =>
                 setLoginForm((prev) => ({ ...prev, username: e.target.value }))
               }
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400"
               placeholder="הכנס שם משתמש"
             />
           </div>
@@ -64,23 +70,18 @@ const LoginForm = () => {
               onChange={(e) =>
                 setLoginForm((prev) => ({ ...prev, password: e.target.value }))
               }
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400"
               placeholder="הכנס סיסמה"
             />
           </div>
 
           <button
             onClick={handleLogin}
+            disabled={isPending}
             className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium"
           >
-            {isPending ? 'טוען...' : 'התחבר'}
+            {isPending ? 'טוען...' : 'כניסה'}
           </button>
-
-          {error && (
-            <div className="text-red-500 text-sm mt-2">
-              שגיאה בהתחברות. בדוק את הפרטים ונסה שוב.
-            </div>
-          )}
         </div>
 
         <div className="mt-6 p-4 bg-gray-50 rounded-lg text-sm text-gray-600">

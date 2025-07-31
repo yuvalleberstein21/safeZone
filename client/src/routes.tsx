@@ -3,11 +3,16 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
 import Dashboard from './pages/admin/Dashboard';
+import { ProtectedRoute } from './components/auth/ProtectedRoute';
 
 export const routes: RouteObject[] = [
   {
     path: '/',
-    element: <Home />,
+    element: (
+      <ProtectedRoute>
+        <Home />
+      </ProtectedRoute>
+    ),
   },
   {
     path: '/login',
@@ -15,7 +20,11 @@ export const routes: RouteObject[] = [
   },
   {
     path: '/manager-dashboard',
-    element: <Dashboard />, //admin only
+    element: (
+      <ProtectedRoute allowedRoles={['manager']}>
+        <Dashboard />
+      </ProtectedRoute>
+    ),
   },
   {
     path: '*',

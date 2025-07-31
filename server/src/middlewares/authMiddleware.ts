@@ -25,7 +25,7 @@ export const isAuthenticated = (
   const token = req.cookies.token;
 
   if (!token) {
-    res.status(401).json({ message: 'Not authenticated' });
+    res.status(401).json({ message: 'לא מורשה' });
     return;
   }
 
