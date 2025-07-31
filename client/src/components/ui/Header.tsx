@@ -1,8 +1,15 @@
 import { User, LogOut, MapPin, Shield } from 'lucide-react';
 import { useState } from 'react';
+import { useCurrentUser } from '../../hooks/useCurrentUser';
 
 const Header = () => {
-  const [isEmployee, setIsEmployee] = useState<boolean>(false);
+  const { data: user, isLoading, error } = useCurrentUser();
+  const [isEmployee, setIsEmployee] = useState<boolean>(true);
+
+  console.log(user);
+
+  if (isLoading) return <p>טוען...</p>;
+  if (error) return <p>שגיאה בטעינת נתוני משתמש</p>;
   return (
     <div className="bg-white shadow-sm">
       {isEmployee ? (
@@ -10,7 +17,9 @@ const Header = () => {
           <div className="flex items-center space-x-3">
             <User className="h-8 w-8 text-blue-600" />
             <div>
-              <h1 className="font-bold text-gray-900">שלום יובל ליברשטיין</h1>
+              <h1 className="font-bold text-gray-900">
+                {user.user?.name || 'שלום אורח'}
+              </h1>
               <p className="flex items-center text-md text-gray-600">
                 מגדל העמק
                 <MapPin className="h-4 w-4" />

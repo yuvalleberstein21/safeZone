@@ -14,6 +14,7 @@ router.post('/login', loginUser);
 router.post('/logout', logoutUser);
 
 router.get('/me', isAuthenticated, (req, res) => {
+  console.log(req.user);
   res.json({ user: req.user });
 });
 
