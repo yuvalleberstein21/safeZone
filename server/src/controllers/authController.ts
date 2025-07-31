@@ -12,8 +12,9 @@ export const registerUser = async (
     username,
     name,
     password,
-    role = 'employee',
+    role: requestedRole,
     area,
+    managerId,
   } = req.body as RegisterInput;
 
   try {
@@ -23,8 +24,47 @@ export const registerUser = async (
       return;
     }
 
+    // ברירת מחדל: כולם נרשמים כ-employee
+    let role: 'employee' | 'manager' = 'employee';
+
+    // אם המשתמש המחובר הוא admin – מותר לו לבחור תפקיד
+    if (req.user?.role === 'admin') {
+      if (requestedRole === 'manager' || requestedRole === 'employee') {
+        role = requestedRole;
+
+        // אם אדמין יוצר עובד, חייב לשלוח managerId
+        if (role === 'employee' && !managerId) {
+          res.status(400).json({
+            message: 'managerId is required when admin creates an employee.',
+          });
+          return;
+        }
+      } else {
+        res.status(400).json({ message: 'Invalid role provided.' });
+        return;
+      }
+    }
+
+    // אם המשתמש המחובר הוא manager – הוא תמיד רושם רק employees
+    if (req.user?.role === 'manager') {
+      role = 'employee';
+    }
+
+    // managerId:
+    const finalManagerId =
+      req.user?.role === 'manager' && role === 'employee'
+        ? req.user.id
+        : managerId ?? undefined;
+
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await createUser(username, name, hashedPassword, role, area);
+    const user = await createUser(
+      username,
+      name,
+      hashedPassword,
+      role,
+      area,
+      finalManagerId
+    );
 
     const token = jwt.sign(
       { id: user.id, role: user.role },

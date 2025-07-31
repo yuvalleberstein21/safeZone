@@ -44,7 +44,8 @@ export const getAllReports = async (
   res: Response
 ): Promise<Report | undefined> => {
   try {
-    const reports: Report[] = await getReportsWithUserInfo();
+    const managerId = req.user!.id;
+    const reports: Report[] = await getReportsWithUserInfo(managerId);
     res.json({ reports });
     return;
   } catch (error) {

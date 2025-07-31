@@ -5,11 +5,20 @@ import {
   registerUser,
 } from '../controllers/authController';
 import { validateRegister } from '../middlewares/validateRegister';
-import { isAuthenticated } from '../middlewares/authMiddleware';
+import {
+  isAuthenticated,
+  isManagerOrAdmin,
+} from '../middlewares/authMiddleware';
 
 const router = express.Router();
 
-router.post('/register', validateRegister, registerUser);
+router.post(
+  '/register',
+  validateRegister,
+  isAuthenticated,
+  isManagerOrAdmin,
+  registerUser
+);
 router.post('/login', loginUser);
 router.post('/logout', logoutUser);
 

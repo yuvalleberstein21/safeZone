@@ -26,7 +26,7 @@ export const insertReport = async (
   return result.rows[0];
 };
 
-export const getReportsWithUserInfo = async () => {
+export const getReportsWithUserInfo = async (managerId: number) => {
   const query = `
     SELECT 
       reports.*, 
@@ -36,9 +36,9 @@ export const getReportsWithUserInfo = async () => {
       users.area AS user_area
     FROM reports
     JOIN users ON reports.user_id = users.id
+    WHERE users.manager_id = $1
     ORDER BY reports.timestamp DESC;
   `;
-
-  const result = await pool.query(query);
+  const result = await pool.query(query, [managerId]);
   return result.rows;
 };

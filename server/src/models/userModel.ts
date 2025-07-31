@@ -6,19 +6,19 @@ export const findUserByUsername = async (username: string) => {
   ]);
   return result.rows[0];
 };
-
 export const createUser = async (
   username: string,
   name: string,
   password: string,
-  role: 'employee' | 'manager',
-  area: string
+  role: 'employee' | 'manager' | 'admin',
+  area: string,
+  managerId?: number // ← תמיכה אופציונלית במנהל
 ) => {
   const result = await pool.query(
-    `INSERT INTO users (username, name, role, area, created_at, updated_at, password)
-     VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, $5)
-     RETURNING id, username, name, role, area`,
-    [username, name, role, area, password]
+    `INSERT INTO users (username, name, role, area, created_at, updated_at, password, manager_id)
+     VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, $5, $6)
+     RETURNING id, username, name, role, area, manager_id`,
+    [username, name, role, area, password, managerId ?? null]
   );
   return result.rows[0];
 };

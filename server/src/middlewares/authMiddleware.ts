@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 
 interface JwtPayload {
   id: number;
-  role: 'employee' | 'manager';
+  role: 'employee' | 'manager' | 'admin';
   username: string;
 }
 
@@ -11,7 +11,7 @@ declare module 'express-serve-static-core' {
   interface Request {
     user?: {
       id: number;
-      role: 'employee' | 'manager';
+      role: 'employee' | 'manager' | 'admin';
       username: string;
     };
   }
@@ -42,12 +42,22 @@ export const isAuthenticated = (
   }
 };
 
-export const isManager = (req: Request, res: Response, next: NextFunction) => {
-  if (req.user?.role !== 'manager') {
-    res.status(403).json({ message: 'Access denied: Manager only' });
-    return;
+export const isManagerOrAdmin = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  if (req.user?.role === 'manager' || req.user?.role === 'admin') {
+    return next();
   }
-  next();
+  res.status(403).json({ message: 'Access denied: Manager or Admin only' });
+};
+
+export const isManager = (req: Request, res: Response, next: NextFunction) => {
+  if (req.user?.role === 'manager') {
+    return next();
+  }
+  res.status(403).json({ message: 'Access denied: Manager only' });
 };
 
 export const isEmployee = (req: Request, res: Response, next: NextFunction) => {
