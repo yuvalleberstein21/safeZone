@@ -6,6 +6,6 @@ export interface userLogin {
 export interface User {
   id: string;
   name: string;
-  role: 'manager' | 'user';
+  role: 'manager' | 'user' | 'admin';
   // אולי גם: email, fullName, etc
 }

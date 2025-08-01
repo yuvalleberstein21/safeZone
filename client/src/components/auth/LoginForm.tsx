@@ -23,6 +23,8 @@ const LoginForm = () => {
 
         if (user.role === 'manager') {
           navigate('/manager-dashboard');
+        } else if (user.role === 'admin') {
+          navigate('/admin-dashboard');
         } else {
           navigate('/');
         }
@@ -86,8 +88,9 @@ const LoginForm = () => {
 
         <div className="mt-6 p-4 bg-gray-50 rounded-lg text-sm text-gray-600">
           <p className="font-medium mb-2">משתמשים לדוגמה:</p>
-          <p>עובד: user123 / 123</p>
-          <p>מנהל: admin1231 / admin1231</p>
+          <p>עובד: employee1 / employee1</p>
+          <p>מנהל עובדים: manager1 / manager1</p>
+          <p>מנהל: admin1 / admin1</p>
         </div>
       </div>
     </div>

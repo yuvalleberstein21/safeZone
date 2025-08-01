@@ -5,7 +5,7 @@ import Loader from '../ui/Loader';
 
 type Props = {
   children: JSX.Element;
-  allowedRoles?: ('manager' | 'user')[];
+  allowedRoles?: ('manager' | 'user' | 'admin')[];
 };
 
 export const ProtectedRoute = ({ children, allowedRoles = [] }: Props) => {
