@@ -1,72 +1,33 @@
+import { useMemo } from 'react';
 import { AlertTriangle, BarChart3, Shield, Users } from 'lucide-react';
-import { useState } from 'react';
 import { useManagerReports } from '../../hooks/useManagerReports';
+import Loader from '../../components/ui/Loader';
 
 const Dashboard = () => {
-  const { data: reports, isLoading, error } = useManagerReports();
+  const { data: reports = [], isLoading, error } = useManagerReports();
+
+  const stats = useMemo(() => {
+    const safe = reports.filter((r) => r.is_safe).length;
+    const unsafe = reports.filter((r) => !r.is_safe).length;
+    const total = reports.length;
+    const safePercentage = total ? Math.round((safe / total) * 100) : 0;
+
+    return {
+      safe,
+      unsafe,
+      total,
+      safePercentage,
+    };
+  }, [reports]);
 
   console.log(reports);
-  if (isLoading) return <p>טוען דיווחים...</p>;
+  if (isLoading) return <Loader />;
   if (error) return <p>שגיאה בטעינה</p>;
-  //       const [currentUser, setCurrentUser] = useState(null);
-  //       const [reportForm, setReportForm] = useState({
-  //     reason: '',
-  //     image: null,
-  //     location: null
-  //   });
-  // const [reports, setReports] = useState([]);
-  // const handleSafetyReport = (isSafe) => {
-  //     const now = new Date();
-  //     const report = {
-  //       id: Date.now(),
-  //       userId: currentUser.id,
-  //       userName: currentUser.name,
-  //       userArea: currentUser.area,
-  //       isSafe,
-  //       timestamp: now,
-  //       reason: reportForm.reason,
-  //       location: reportForm.location,
-  //       image: reportForm.image
-  //     };
 
-  //     setReports(prev => [report, ...prev]);
-
-  //     if (!isSafe) {
-  //       // התרעה למנהל
-  //       setTimeout(() => {
-  //         alert(`🚨 התרעה: ${currentUser.name} דיווח על מצב לא בטוח!`);
-  //       }, 500);
-  //     } else {
-  //       alert('✅ הדיווח נקלט בהצלחה - תודה על הדיווח!');
-  //     }
-
-  //     setShowReportModal(false);
-  //     setReportForm({ reason: '', image: null, location: null });
-  //   };
-
-  // const getReportStats = () => {
-  //   const today = new Date().toDateString();
-  //   const todayReports = reports.filter(
-  //     (r) => r.timestamp.toDateString() === today
-  //   );
-  //   const safeReports = todayReports.filter((r) => r.isSafe).length;
-  //   const unsafeReports = todayReports.filter((r) => !r.isSafe).length;
-  //   const totalReports = todayReports.length;
-
-  //   return {
-  //     safe: safeReports,
-  //     unsafe: unsafeReports,
-  //     total: totalReports,
-  //     safePercentage:
-  //       totalReports > 0 ? Math.round((safeReports / totalReports) * 100) : 0,
-  //   };
-  // };
-
-  // const stats = getReportStats();
   return (
     <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-8">
       {/* Stats Cards */}
-      {/* <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 mx-8 ">
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center">
             <div className="p-2 bg-green-100 rounded-lg">
@@ -122,7 +83,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-      </div> */}
+      </div>
 
       {/* Recent Reports */}
       <div className="bg-white rounded-lg shadow">
@@ -152,9 +113,9 @@ const Dashboard = () => {
             </thead>
 
             <tbody className="bg-white divide-y divide-gray-200">
-              {reports?.map((report) => (
+              {reports.map((report) => (
                 <tr key={3}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  <td className="px-3 py-1 whitespace-nowrap text-sm text-gray-900">
                     {report.user_name}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -169,20 +130,23 @@ const Dashboard = () => {
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {/* {report.timestamp.toLocaleString('he-IL')} */}
-                    {report.timestamp}
+                    {new Date(report.timestamp).toLocaleString('he-IL', {
+                      dateStyle: 'short',
+                      timeStyle: 'short',
+                      timeZone: 'Asia/Jerusalem',
+                    })}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {report.area}
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-900">
+                  <td className="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">
                     {report.reason || '-'}
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-          {reports?.length === 0 && (
+          {reports.length === 0 && (
             <div className="text-center py-8 text-gray-500">
               אין דיווחים עדיין
             </div>

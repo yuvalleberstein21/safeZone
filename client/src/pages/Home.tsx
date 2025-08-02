@@ -1,6 +1,9 @@
 import { AlertTriangle, Shield } from 'lucide-react';
+import { useState } from 'react';
+import ReportModel from '../components/ReportModel';
 
 const Home = () => {
+  const [showReportModal, setShowReportModal] = useState<boolean>(false);
   return (
     <div className="text-center py-2">
       <h2 className="text-3xl font-bold text-gray-900 mb-2">
@@ -30,7 +33,7 @@ const Home = () => {
 
           {/* Unsafe Button */}
           <button
-            // onClick={() => setShowReportModal(true)}
+            onClick={() => setShowReportModal(true)}
             className="group relative bg-gradient-to-br from-red-400 to-red-600 hover:from-red-500 hover:to-red-700 text-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
           >
             <div className="flex flex-col items-center space-y-4">
@@ -45,6 +48,9 @@ const Home = () => {
           </button>
         </div>
       </div>
+      {showReportModal && (
+        <ReportModel setShowReportModal={setShowReportModal} />
+      )}
     </div>
   );
 };
