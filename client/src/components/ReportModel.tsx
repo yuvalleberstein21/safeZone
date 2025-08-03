@@ -1,10 +1,61 @@
-import { Camera, Clock, MapPin, Send } from 'lucide-react';
+import { MapPin, Send } from 'lucide-react';
+import { useState } from 'react';
+import { usePostReport } from '../hooks/usePostReport';
+import type { ReportData } from '../types/report';
+import axios from 'axios';
+import { getUserLocation } from '../utils/getUserLocation';
 
 type ReportModelProps = {
   setShowReportModal: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const ReportModel = ({ setShowReportModal }: ReportModelProps) => {
+  const [selectedCity, setSelectedCity] = useState('');
+  const [detailedLocation, setDetailedLocation] = useState('');
+  const [reason, setReason] = useState('');
+
+  const postReportMutation = usePostReport();
+
+  const handleSubmit = async () => {
+    if (!selectedCity && !detailedLocation) {
+      alert('אנא בחר עיר או הזן מיקום מדויק');
+      return;
+    }
+
+    try {
+      // שימוש במיקום דמה במקום מיקום אמיתי
+      const location = await getUserLocation();
+
+      const reportData: ReportData = {
+        is_safe: false,
+        latitude: location.latitude,
+        longitude: location.longitude,
+        reason,
+        area: detailedLocation || selectedCity,
+        timestamp: new Date().toISOString(),
+      };
+
+      console.log('Sending report:', reportData);
+
+      postReportMutation.mutate(reportData, {
+        onSuccess: () => setShowReportModal(false),
+        onError: (error: any) => {
+          console.error('Error posting report:', error);
+          if (axios.isAxiosError(error)) {
+            alert(
+              'שגיאה בשליחת הדיווח: ' +
+                (error.response?.data?.message || error.message)
+            );
+          } else {
+            alert('שגיאה בשליחת הדיווח: ' + String(error));
+          }
+        },
+      });
+    } catch (error) {
+      alert('שגיאה בלתי צפויה.');
+      console.error('Error:', error);
+    }
+  };
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-2xl max-w-md w-full p-6">
@@ -19,66 +70,57 @@ const ReportModel = ({ setShowReportModal }: ReportModelProps) => {
         </div>
 
         <div className="space-y-4">
-          {/* Time and Location Info */}
-          <div className="bg-gray-50 rounded-lg p-4 space-y-2">
-            <div className="flex items-center space-x-2 text-sm text-gray-600">
-              <Clock className="h-4 w-4" />
-              <span className="px-1">{new Date().toLocaleString('he-IL')}</span>
-            </div>
-            <div className="flex items-center space-x-2 text-sm text-gray-600">
-              <MapPin className="h-4 w-4" />
-              {/* <span>
-                {reportForm.location
-                  ? `${reportForm.location.lat.toFixed(
-                      4
-                    )}, ${reportForm.location.lng.toFixed(4)}`
-                  : 'מקבל מיקום...'}
-              </span> */}
-            </div>
+          {/* מיקום גאוגרפי - מבוטל כי לא בשימוש */}
+          {/* אפשר להוריד את החלק הזה אם רוצים */}
+
+          {/* בחירת עיר */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              בחר עיר
+            </label>
+            <select
+              value={selectedCity}
+              onChange={(e) => setSelectedCity(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+            >
+              <option value="">בחר עיר</option>
+              <option value="תל אביב">תל אביב</option>
+              <option value="ירושלים">ירושלים</option>
+              <option value="חיפה">חיפה</option>
+            </select>
           </div>
 
-          {/* Reason */}
+          {/* מיקום מדויק טקסטואלי */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              מיקום מדויק בתוך העיר (רחוב, קומה, אגף וכו׳)
+            </label>
+            <input
+              type="text"
+              value={detailedLocation}
+              onChange={(e) => setDetailedLocation(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+              placeholder="לדוגמה: משרד החינוך קומה 4 אגף A"
+            />
+          </div>
+
+          {/* סיבה */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               סיבת הדיווח (אופציונלי)
             </label>
             <textarea
-              value={'אדם חשוד'}
-              //   value={reportForm.reason}
-              //   onChange={(e) =>
-              //     setReportForm((prev) => ({ ...prev, reason: e.target.value }))
-              //   }
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
-              placeholder="תאר/י בקצרה מה הבעיה..."
               rows={3}
+              placeholder="תאר/י בקצרה מה הבעיה..."
             />
           </div>
 
-          {/* Image Upload */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              צירוף תמונה (אופציונלי)
-            </label>
-            <div className="flex items-center space-x-3">
-              <label className="cursor-pointer bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors">
-                <Camera className="h-4 w-4" />
-                <span className="text-sm px-1">בחר תמונה</span>
-                <input
-                  type="file"
-                  accept="image/*"
-                  //   onChange={handleImageUpload}
-                  className="hidden"
-                />
-              </label>
-              {/* {reportForm.image && (
-                <span className="text-sm text-green-600">✓ תמונה נבחרה</span>
-              )} */}
-            </div>
-          </div>
-
-          {/* Submit Button */}
+          {/* כפתור שליחה */}
           <button
-            // onClick={() => handleSafetyReport(false)}
+            onClick={handleSubmit}
             className="w-full bg-red-600 hover:bg-red-700 text-white py-3 px-4 rounded-lg flex items-center justify-center space-x-2 transition-colors"
           >
             <Send className="h-4 w-4" />

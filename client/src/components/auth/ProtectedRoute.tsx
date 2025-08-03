@@ -5,7 +5,7 @@ import Loader from '../ui/Loader';
 
 type Props = {
   children: JSX.Element;
-  allowedRoles?: ('manager' | 'user' | 'admin')[];
+  allowedRoles?: ('manager' | 'employee' | 'admin')[];
 };
 
 export const ProtectedRoute = ({ children, allowedRoles = [] }: Props) => {
@@ -20,6 +20,9 @@ export const ProtectedRoute = ({ children, allowedRoles = [] }: Props) => {
   }
 
   if (allowedRoles.length > 0 && !allowedRoles.includes(user.role)) {
+    // נניח שאתה רוצה להפנות כל אחד לפי תפקיד
+    if (user.role === 'admin') return <Navigate to="/admin-dashboard" />;
+    if (user.role === 'manager') return <Navigate to="/manager-dashboard" />;
     return <Navigate to="/" />;
   }
 

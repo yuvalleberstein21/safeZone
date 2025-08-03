@@ -9,7 +9,7 @@ export const routes: RouteObject[] = [
   {
     path: '/',
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute allowedRoles={['employee']}>
         <Home />
       </ProtectedRoute>
     ),

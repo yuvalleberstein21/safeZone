@@ -16,3 +16,12 @@ export interface Report {
   role: 'employee' | 'manager' | 'admin';
   user_area: string;
 }
+
+export type ReportData = {
+  is_safe: boolean;
+  latitude: number | null;
+  longitude: number | null;
+  reason: string;
+  area: string;
+  timestamp: string;
+};

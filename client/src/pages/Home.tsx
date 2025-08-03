@@ -1,9 +1,52 @@
 import { AlertTriangle, Shield } from 'lucide-react';
 import { useState } from 'react';
 import ReportModel from '../components/ReportModel';
+import { getUserLocation } from '../utils/getUserLocation';
+import type { ReportData } from '../types/report';
+import { usePostReport } from '../hooks/usePostReport';
+import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const Home = () => {
   const [showReportModal, setShowReportModal] = useState<boolean>(false);
+
+  const postReportMutation = usePostReport();
+
+  const handleSafetyReport = async (isSafe: boolean) => {
+    try {
+      const location = await getUserLocation(); // כאן משתמשים במיקום דמה או אמיתי בעתיד
+
+      const reportData: ReportData = {
+        is_safe: isSafe,
+        latitude: location.latitude,
+        longitude: location.longitude,
+        reason: '', // אפשרות להשאיר ריק במקרה של דיווח בטוח
+        area: '',
+        timestamp: new Date().toISOString(),
+      };
+
+      postReportMutation.mutate(reportData, {
+        onSuccess: () => {
+          toast.success('הדיווח נשלח בהצלחה!');
+          setShowReportModal(false);
+        },
+        onError: (error: any) => {
+          console.error('Error posting report:', error);
+          if (axios.isAxiosError(error)) {
+            alert(
+              'שגיאה בשליחת הדיווח: ' +
+                (error.response?.data?.message || error.message)
+            );
+          } else {
+            alert('שגיאה בשליחת הדיווח: ' + String(error));
+          }
+        },
+      });
+    } catch (error) {
+      alert('שגיאה בקבלת המיקום.');
+      console.error(error);
+    }
+  };
   return (
     <div className="text-center py-2">
       <h2 className="text-3xl font-bold text-gray-900 mb-2">
@@ -17,7 +60,7 @@ const Home = () => {
         <div className="grid grid-cols-1 md:grid-cols-1 gap-4 mt-3  mx-4 max-w-2xl w-full">
           {/* Safe Button */}
           <button
-            // onClick={() => handleSafetyReport(true)}
+            onClick={() => handleSafetyReport(true)}
             className="group relative bg-gradient-to-br from-green-400 to-green-600 hover:from-green-500 hover:to-green-700 text-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
           >
             <div className="flex flex-col items-center space-y-4">
