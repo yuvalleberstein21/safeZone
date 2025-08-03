@@ -1,15 +1,36 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { AlertTriangle, BarChart3, Shield, Users } from 'lucide-react';
 import { useManagerReports } from '../../hooks/useManagerReports';
 import Loader from '../../components/ui/Loader';
 
 const Dashboard = () => {
   const { data: reports = [], isLoading, error } = useManagerReports();
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+
+  const now = new Date();
+  const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+
+  const recentReports = useMemo(() => {
+    return reports.filter((report) => new Date(report.timestamp) >= oneDayAgo);
+  }, [reports]);
+
+  const filteredReports = useMemo(() => {
+    return reports.filter((report) => {
+      const timestamp = new Date(report.timestamp);
+      const from = startDate ? new Date(startDate) : null;
+      const to = endDate ? new Date(endDate) : null;
+
+      return (!from || timestamp >= from) && (!to || timestamp <= to);
+    });
+  }, [reports, startDate, endDate]);
+
+  const displayReports = startDate || endDate ? filteredReports : recentReports;
 
   const stats = useMemo(() => {
-    const safe = reports.filter((r) => r.is_safe).length;
-    const unsafe = reports.filter((r) => !r.is_safe).length;
-    const total = reports.length;
+    const safe = displayReports.filter((r) => r.is_safe).length;
+    const unsafe = displayReports.filter((r) => !r.is_safe).length;
+    const total = displayReports.length;
     const safePercentage = total ? Math.round((safe / total) * 100) : 0;
 
     return {
@@ -18,7 +39,7 @@ const Dashboard = () => {
       total,
       safePercentage,
     };
-  }, [reports]);
+  }, [displayReports]);
 
   console.log(reports);
   if (isLoading) return <Loader />;
@@ -26,6 +47,11 @@ const Dashboard = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-8">
+      <p className="text-md text-gray-500 mt-2 text-center mb-5">
+        {startDate || endDate
+          ? `מציג דיווחים בין ${startDate || 'התחלה'} ל־${endDate || 'היום'}`
+          : 'מציג דיווחים מה-24 שעות האחרונות'}
+      </p>
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 mx-8 ">
         <div className="bg-white rounded-lg shadow p-6">
@@ -87,6 +113,26 @@ const Dashboard = () => {
 
       {/* Recent Reports */}
       <div className="bg-white rounded-lg shadow">
+        <div className="flex justify-start gap-4 mx-4 py-4">
+          <div>
+            <label className="block text-sm text-gray-700">מתאריך</label>
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="border rounded px-2 py-1"
+            />
+          </div>
+          <div>
+            <label className="block text-sm text-gray-700">עד תאריך</label>
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="border rounded px-2 py-1"
+            />
+          </div>
+        </div>
         <div className="px-6 py-4 border-b border-gray-200">
           <h2 className="text-lg font-medium text-gray-900">דיווחים אחרונים</h2>
         </div>
@@ -113,7 +159,7 @@ const Dashboard = () => {
             </thead>
 
             <tbody className="bg-white divide-y divide-gray-200">
-              {reports.map((report) => (
+              {displayReports.map((report) => (
                 <tr key={3}>
                   <td className="px-3 py-1 whitespace-nowrap text-sm text-gray-900">
                     {report.user_name}
