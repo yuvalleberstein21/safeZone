@@ -14,37 +14,30 @@ const Home = () => {
 
   const handleSafetyReport = async (isSafe: boolean) => {
     try {
-      const location = await getUserLocation(); // כאן משתמשים במיקום דמה או אמיתי בעתיד
+      const location = await getUserLocation();
 
       const reportData: ReportData = {
         is_safe: isSafe,
         latitude: location.latitude,
         longitude: location.longitude,
-        reason: '', // אפשרות להשאיר ריק במקרה של דיווח בטוח
+        reason: '',
         area: '',
         timestamp: new Date().toISOString(),
       };
 
       postReportMutation.mutate(reportData, {
         onSuccess: () => {
-          toast.success('הדיווח נשלח בהצלחה!');
+          toast.success('הדיווח נשלח בהצלחה');
           setShowReportModal(false);
         },
-        onError: (error: any) => {
-          console.error('Error posting report:', error);
-          if (axios.isAxiosError(error)) {
-            alert(
-              'שגיאה בשליחת הדיווח: ' +
-                (error.response?.data?.message || error.message)
-            );
-          } else {
-            alert('שגיאה בשליחת הדיווח: ' + String(error));
-          }
+        onError: (error) => {
+          toast.error('שגיאה בשליחת הדיווח');
+          console.error(error);
         },
       });
-    } catch (error) {
-      alert('שגיאה בקבלת המיקום.');
-      console.error(error);
+    } catch (err) {
+      toast.error('לא ניתן היה לקבל את המיקום');
+      console.error(err);
     }
   };
   return (
