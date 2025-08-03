@@ -4,7 +4,6 @@ import ReportModel from '../components/ReportModel';
 import { getUserLocation } from '../utils/getUserLocation';
 import type { ReportData } from '../types/report';
 import { usePostReport } from '../hooks/usePostReport';
-import axios from 'axios';
 import toast from 'react-hot-toast';
 
 const Home = () => {

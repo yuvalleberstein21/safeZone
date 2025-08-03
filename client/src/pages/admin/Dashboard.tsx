@@ -2,9 +2,11 @@ import { useMemo, useState } from 'react';
 import { AlertTriangle, BarChart3, Shield, Users } from 'lucide-react';
 import { useManagerReports } from '../../hooks/useManagerReports';
 import Loader from '../../components/ui/Loader';
+import RegisterModel from '../../components/RegisterModel';
 
 const Dashboard = () => {
   const { data: reports = [], isLoading, error } = useManagerReports();
+  const [ShowRegisterModel, setShowRegisterModel] = useState<boolean>(false);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
 
@@ -47,6 +49,12 @@ const Dashboard = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-8">
+      <button
+        onClick={() => setShowRegisterModel(true)}
+        className="bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+      >
+        יצירת עובד חדש
+      </button>
       <p className="text-md text-gray-500 mt-2 text-center mb-5">
         {startDate || endDate
           ? `מציג דיווחים בין ${startDate || 'התחלה'} ל־${endDate || 'היום'}`
@@ -160,7 +168,7 @@ const Dashboard = () => {
 
             <tbody className="bg-white divide-y divide-gray-200">
               {displayReports.map((report) => (
-                <tr key={3}>
+                <tr key={report.id}>
                   <td className="px-3 py-1 whitespace-nowrap text-sm text-gray-900">
                     {report.user_name}
                   </td>
@@ -199,6 +207,9 @@ const Dashboard = () => {
           )}
         </div>
       </div>
+      {ShowRegisterModel && (
+        <RegisterModel setShowRegisterModel={setShowRegisterModel} />
+      )}
     </div>
   );
 };
