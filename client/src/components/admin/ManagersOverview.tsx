@@ -1,5 +1,7 @@
+import type { User } from '../../types/user';
+
 type Props = {
-  users: any[];
+  users: User[];
 };
 
 const ManagersOverview = ({ users }: Props) => {

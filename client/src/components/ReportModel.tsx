@@ -1,9 +1,10 @@
-import { MapPin, Send } from 'lucide-react';
+import { Send } from 'lucide-react';
 import { useState } from 'react';
 import { usePostReport } from '../hooks/usePostReport';
 import type { ReportData } from '../types/report';
 import axios from 'axios';
 import { getUserLocation } from '../utils/getUserLocation';
+import toast from 'react-hot-toast';
 
 type ReportModelProps = {
   setShowReportModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -38,8 +39,11 @@ const ReportModel = ({ setShowReportModal }: ReportModelProps) => {
       console.log('Sending report:', reportData);
 
       postReportMutation.mutate(reportData, {
-        onSuccess: () => setShowReportModal(false),
-        onError: (error: any) => {
+        onSuccess: () => {
+          toast.success('הדיווח נשלח בהצלחה');
+          setShowReportModal(false);
+        },
+        onError: (error: unknown) => {
           console.error('Error posting report:', error);
           if (axios.isAxiosError(error)) {
             alert(

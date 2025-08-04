@@ -2,29 +2,43 @@ import { User } from 'lucide-react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useRegister } from '../hooks/useRegister';
+import { isAxiosError } from 'axios';
 
 type RegisterModelProps = {
   setShowRegisterModel: React.Dispatch<React.SetStateAction<boolean>>;
+  isAdmin: boolean;
 };
-const RegisterModel = ({ setShowRegisterModel }: RegisterModelProps) => {
+const RegisterModel = ({
+  setShowRegisterModel,
+  isAdmin,
+}: RegisterModelProps) => {
   const [RegisterForm, setRegisterForm] = useState({
     username: '',
     name: '',
     area: '',
     password: '',
+    confirmPassword: '',
   });
 
   const { mutate, isPending } = useRegister();
 
   const handleRegister = () => {
+    if (RegisterForm.confirmPassword !== RegisterForm.password) {
+      toast.error('סיסמאות לא תואמות ,נסה שוב.');
+      return;
+    }
     mutate(RegisterForm, {
       onSuccess: (data) => {
-        console.log(data);
         toast.success(`${data.user.name} נרשם/ה בהצלחה`);
         setShowRegisterModel(false);
       },
-      onError: (err: any) => {
-        const msg = err.response?.data?.message || 'הרישום נכשל. נסה שוב.';
+      onError: (err: unknown) => {
+        let msg = 'ההרשמה נכשלה נסה שוב.';
+
+        if (isAxiosError(err)) {
+          msg = err.response?.data?.message || msg;
+        }
+
         toast.error(msg);
       },
     });
@@ -40,7 +54,9 @@ const RegisterModel = ({ setShowRegisterModel }: RegisterModelProps) => {
         </button>
         <div className="text-center mb-6 py-2 flex justify-center items-center flex-row-reverse">
           <User className="mx-auto h-8 w-8 text-blue-600" />
-          <p className="text-gray-600 text-xl">יצירת עובד חדש למערכת</p>
+          <p className="text-gray-600 text-xl">
+            {isAdmin ? 'יצירת מנהל חדש למערכת' : 'יצירת עובד חדש למערכת'}
+          </p>
         </div>
 
         <div className="space-y-6">
@@ -100,6 +116,24 @@ const RegisterModel = ({ setShowRegisterModel }: RegisterModelProps) => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
+              אשר סיסמא
+            </label>
+            <input
+              type="password"
+              value={RegisterForm.confirmPassword}
+              onChange={(e) =>
+                setRegisterForm((prev) => ({
+                  ...prev,
+                  confirmPassword: e.target.value,
+                }))
+              }
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400"
+              placeholder="אשר סיסמא"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               מקום העבודה
             </label>
             <input
@@ -112,6 +146,28 @@ const RegisterModel = ({ setShowRegisterModel }: RegisterModelProps) => {
               placeholder="מקום העבודה(לדוג: קרית הממשלה נוף הגליל משרד החינוך)"
             />
           </div>
+          {isAdmin && (
+            <div>
+              <div>
+                <input
+                  type="radio"
+                  id="huey"
+                  name="drone"
+                  value="huey"
+                  checked
+                />
+                <label htmlFor="huey" className="px-2">
+                  מנהל
+                </label>
+              </div>
+              <div>
+                <input type="radio" id="dewey" name="drone" value="dewey" />
+                <label htmlFor="dewey" className="px-2">
+                  עובד
+                </label>
+              </div>
+            </div>
+          )}
 
           <button
             onClick={handleRegister}
@@ -121,13 +177,6 @@ const RegisterModel = ({ setShowRegisterModel }: RegisterModelProps) => {
             {isPending ? 'טוען...' : 'הרשמה'}
           </button>
         </div>
-        {/* 
-        <div className="mt-6 p-4 bg-gray-50 rounded-lg text-sm text-gray-600">
-          <p className="font-medium mb-2">משתמשים לדוגמה:</p>
-          <p>עובד: employee1 / employee1</p>
-          <p>מנהל עובדים: manager1 / manager1</p>
-          <p>מנהל: admin1 / admin1</p>
-        </div> */}
       </div>
     </div>
   );

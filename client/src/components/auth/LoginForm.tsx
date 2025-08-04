@@ -4,6 +4,7 @@ import { useLogin } from '../../hooks/useLogin';
 import { useNavigate } from 'react-router-dom';
 import { useCurrentUser } from '../../hooks/useCurrentUser';
 import { toast } from 'react-hot-toast';
+import { isAxiosError } from 'axios';
 
 const LoginForm = () => {
   const [loginForm, setLoginForm] = useState({ username: '', password: '' });
@@ -29,8 +30,13 @@ const LoginForm = () => {
           navigate('/');
         }
       },
-      onError: (err: any) => {
-        const msg = err.response?.data?.message || 'התחברות נכשלה. נסה שוב.';
+      onError: (err: unknown) => {
+        let msg = 'התחברות נכשלה. נסה שוב.';
+
+        if (isAxiosError(err)) {
+          msg = err.response?.data?.message || msg;
+        }
+
         toast.error(msg);
       },
     });
@@ -84,13 +90,6 @@ const LoginForm = () => {
           >
             {isPending ? 'טוען...' : 'כניסה'}
           </button>
-        </div>
-
-        <div className="mt-6 p-4 bg-gray-50 rounded-lg text-sm text-gray-600">
-          <p className="font-medium mb-2">משתמשים לדוגמה:</p>
-          <p>עובד: employee1 / employee1</p>
-          <p>מנהל עובדים: manager1 / manager1</p>
-          <p>מנהל: admin1 / admin1</p>
         </div>
       </div>
     </div>

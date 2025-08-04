@@ -20,7 +20,7 @@ export const registerUser = async (
   try {
     const existingUser = await findUserByUsername(username);
     if (existingUser) {
-      res.status(409).json({ message: 'Username already exists.' });
+      res.status(409).json({ message: 'שם משתמש קיים במערכת' });
       return;
     }
 
@@ -66,10 +66,10 @@ export const registerUser = async (
       finalManagerId
     );
 
-    res.status(201).json({ message: 'User registered successfully', user });
+    res.status(201).json({ message: 'משתמש נוצר בהצלחה', user });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Registration failed.' });
+    res.status(500).json({ message: 'ההרשמה נכשלה' });
   }
 };
 

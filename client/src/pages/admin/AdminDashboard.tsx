@@ -5,6 +5,7 @@ import UsersTable from '../../components/admin/UsersTable';
 import ActivityLogs from '../../components/admin/ActivityLogs';
 import { useAlerts } from '../../hooks/useAlerts';
 import Loader from '../../components/ui/Loader';
+import RegisterModel from '../../components/RegisterModel';
 // import UsersTable from './components/UsersTable';
 // import ManagersOverview from './components/ManagersOverview';
 // import SystemStats from './components/SystemStats';
@@ -25,7 +26,7 @@ type Log = {
   user_name: string;
 };
 const AdminDashboard = () => {
-  // const [users, setUsers] = useState([]);
+  const [showRegisterModel, setShowRegisterModel] = useState<boolean>(false);
   const [logs, setLogs] = useState([]);
 
   const { data, isLoading, isError } = useAlerts();
@@ -98,16 +99,38 @@ const AdminDashboard = () => {
   //   fetchData();
   // }, []);
   return (
-    <div className="p-6 space-y-8">
-      <h1 className="text-2xl font-bold text-gray-800">לוח ניהול ראשי</h1>
+    <div>
+      <div className="p-6">
+        <div className="mb-4">
+          <h1 className="text-2xl mb-2 font-bold text-gray-800">
+            לוח ניהול ראשי
+          </h1>
+          <button
+            onClick={() => setShowRegisterModel(true)}
+            className="bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 font-medium"
+          >
+            יצירת מנהל חדש
+          </button>
+        </div>
 
-      <SystemStats users={data.users} />
+        <div className="py-4">
+          <SystemStats users={data.users} />
+        </div>
+        <div className="py-4">
+          <ManagersOverview users={data.users} />
+        </div>
+        <div className="py-4">
+          <UsersTable users={data.users} />
+        </div>
+        <ActivityLogs logs={logs} />
 
-      <ManagersOverview users={data.users} />
-
-      <UsersTable users={data.users} />
-
-      <ActivityLogs logs={logs} />
+        {showRegisterModel && (
+          <RegisterModel
+            setShowRegisterModel={setShowRegisterModel}
+            isAdmin={true}
+          />
+        )}
+      </div>
     </div>
   );
 };

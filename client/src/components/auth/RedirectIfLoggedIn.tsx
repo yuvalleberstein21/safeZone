@@ -10,11 +10,10 @@ export const RedirectIfLoggedIn = () => {
   if (isLoading) return <Loader />;
 
   if (user) {
-    // הפניה לפי תפקיד
     if (user.role === 'admin') return <Navigate to="/admin-dashboard" />;
     if (user.role === 'manager') return <Navigate to="/manager-dashboard" />;
-    return <Navigate to="/" />; // עובד רגיל
+    return <Navigate to="/" />;
   }
 
-  return <Login />; // לא מחובר? הצג את טופס ההתחברות
+  return <Login />;
 };

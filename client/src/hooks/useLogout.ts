@@ -14,7 +14,6 @@ export const useLogout = () => {
       });
     },
     onSuccess: () => {
-      // מנקה את ה-cached user
       queryClient.setQueryData(['currentUser'], null);
     },
   });
