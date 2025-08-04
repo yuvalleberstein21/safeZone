@@ -1,7 +1,6 @@
 import { User } from 'lucide-react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
-import { useCurrentUser } from '../hooks/useCurrentUser';
 import { useRegister } from '../hooks/useRegister';
 
 type RegisterModelProps = {

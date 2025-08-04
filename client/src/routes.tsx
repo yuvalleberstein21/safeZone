@@ -1,9 +1,9 @@
 import type { RouteObject } from 'react-router-dom';
 import Home from './pages/Home';
-import Login from './pages/Login';
 import NotFound from './pages/NotFound';
-import Dashboard from './pages/admin/Dashboard';
+import Dashboard from './pages/manager/Dashboard';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
+import { RedirectIfLoggedIn } from './components/auth/RedirectIfLoggedIn';
 
 export const routes: RouteObject[] = [
   {
@@ -16,7 +16,8 @@ export const routes: RouteObject[] = [
   },
   {
     path: '/login',
-    element: <Login />,
+    element: <RedirectIfLoggedIn />,
+    // element: <Login />,
   },
   {
     path: '/manager-dashboard',
