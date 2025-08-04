@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import pool from './db/db';
 import authRoutes from './routes/auth';
 import reportRoutes from './routes/reports';
+import adminRoutes from './routes/admin';
 
 dotenv.config();
 
@@ -29,6 +30,7 @@ pool
 
 app.use('/api/auth', authRoutes);
 app.use('/api/report', reportRoutes);
+app.use('/api/admin', adminRoutes);
 // Start server
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);

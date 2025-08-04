@@ -60,6 +60,13 @@ export const isManager = (req: Request, res: Response, next: NextFunction) => {
   res.status(403).json({ message: 'Access denied: Manager only' });
 };
 
+export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
+  if (req.user?.role === 'admin') {
+    return next();
+  }
+  res.status(403).json({ message: 'Access denied: Manager only' });
+};
+
 export const isEmployee = (req: Request, res: Response, next: NextFunction) => {
   if (req.user?.role !== 'employee') {
     res.status(403).json({ message: 'Access denied: Employee only' });

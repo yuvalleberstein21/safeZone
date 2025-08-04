@@ -1,4 +1,5 @@
 import pool from '../db/db';
+import { User } from '../types/user';
 
 export const findUserByUsername = async (username: string) => {
   const result = await pool.query('SELECT * FROM users WHERE username = $1', [
@@ -21,4 +22,15 @@ export const createUser = async (
     [username, name, role, area, password, managerId ?? null]
   );
   return result.rows[0];
+};
+
+// ONLY ADMIN
+export const getAllUsers = async (): Promise<User[]> => {
+  const result = await pool.query(
+    `SELECT id, name, role, area, created_at
+     FROM users
+     WHERE role != 'admin'
+     ORDER BY created_at DESC`
+  );
+  return result.rows;
 };

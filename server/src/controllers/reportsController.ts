@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { getReportsWithUserInfo, insertReport } from '../models/reportsModel';
 import { Report } from '../types/report';
+import pool from '../db/db';
 
 export const createReport = async (
   req: Request,
@@ -29,6 +30,14 @@ export const createReport = async (
       area,
       shift_id,
     });
+
+    // ⚠️ אם הדיווח הוא לא בטוח – ניצור התראה
+    if (!is_safe) {
+      await pool.query(
+        `INSERT INTO alerts (report_id, status) VALUES ($1, 'pending')`,
+        [newReport.id]
+      );
+    }
 
     res.status(201).json({ message: 'Report created', report: newReport });
     return;
