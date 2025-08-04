@@ -84,7 +84,10 @@ const Dashboard = () => {
       <ReportsTable reports={displayReports} />
 
       {showRegisterModel && (
-        <RegisterModel setShowRegisterModel={setShowRegisterModel} />
+        <RegisterModel
+          setShowRegisterModel={setShowRegisterModel}
+          isAdmin={false}
+        />
       )}
     </div>
   );

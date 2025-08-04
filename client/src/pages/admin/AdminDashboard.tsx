@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import SystemStats from '../../components/admin/SystemStats';
 import ManagersOverview from '../../components/admin/ManagersOverview';
 import UsersTable from '../../components/admin/UsersTable';
