@@ -16,7 +16,7 @@ export const createReport = async (
 
   const userId = req.user!.id;
 
-  const { is_safe, latitude, longitude, reason, image_url, area, shift_id } =
+  const { is_safe, latitude, longitude, reason, image_url, area } =
     req.body as Report;
 
   try {
@@ -28,7 +28,6 @@ export const createReport = async (
       reason,
       image_url,
       area,
-      shift_id,
     });
 
     // ⚠️ אם הדיווח הוא לא בטוח – ניצור התראה

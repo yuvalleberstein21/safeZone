@@ -59,7 +59,7 @@ const RegisterModel = ({
           </p>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-1">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               שם משתמש
@@ -143,11 +143,11 @@ const RegisterModel = ({
                 setRegisterForm((prev) => ({ ...prev, area: e.target.value }))
               }
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400"
-              placeholder="מקום העבודה(לדוג: קרית הממשלה נוף הגליל משרד החינוך)"
+              placeholder="מקום העבודה"
             />
           </div>
           {isAdmin && (
-            <div>
+            <div className="flex py-2">
               <div>
                 <input
                   type="radio"
