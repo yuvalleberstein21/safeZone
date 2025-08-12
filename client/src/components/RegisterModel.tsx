@@ -18,6 +18,7 @@ const RegisterModel = ({
     area: '',
     password: '',
     confirmPassword: '',
+    role: isAdmin ? 'manager' : 'employee',
   });
 
   const { mutate, isPending } = useRegister();
@@ -147,26 +148,9 @@ const RegisterModel = ({
             />
           </div>
           {isAdmin && (
-            <div className="flex py-2">
-              <div>
-                <input
-                  type="radio"
-                  id="huey"
-                  name="drone"
-                  value="huey"
-                  checked
-                />
-                <label htmlFor="huey" className="px-2">
-                  מנהל
-                </label>
-              </div>
-              <div>
-                <input type="radio" id="dewey" name="drone" value="dewey" />
-                <label htmlFor="dewey" className="px-2">
-                  עובד
-                </label>
-              </div>
-            </div>
+            <p className="text-sm text-gray-500 py-2">
+              המשתמש החדש יירשם כמנהל
+            </p>
           )}
 
           <button
