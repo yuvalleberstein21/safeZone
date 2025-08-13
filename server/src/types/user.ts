@@ -16,4 +16,5 @@ export interface User {
   area: string;
   created_at: string;
   updated_at: string;
+  manager_id: number;
 }

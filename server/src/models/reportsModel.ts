@@ -42,11 +42,3 @@ export const getReportsWithUserInfo = async (managerId: number) => {
   const result = await pool.query(query, [managerId]);
   return result.rows;
 };
-
-// ONLY ADMIN
-export const getRecentReports = async (): Promise<Report[]> => {
-  const result = await pool.query(
-    'SELECT * FROM reports ORDER BY timestamp DESC LIMIT 100'
-  );
-  return result.rows;
-};
