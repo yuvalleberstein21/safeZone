@@ -4,7 +4,7 @@ export interface userLogin {
 }
 
 export interface User {
-  id: string;
+  id: number;
   name: string;
   role: 'manager' | 'employee' | 'admin';
   area?: string;

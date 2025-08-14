@@ -1,6 +1,7 @@
-import { Search } from 'lucide-react';
+import { Search, Trash2 } from 'lucide-react';
 import type { User } from '../../types/user';
 import { useEffect, useState } from 'react';
+import { useDeleteUser } from '../../hooks/useDeleteUser';
 
 type Props = {
   users: User[];
@@ -9,6 +10,8 @@ type Props = {
 const UsersTable = ({ users }: Props) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
+
+  const deleteUser = useDeleteUser();
 
   // debounce effect
   useEffect(() => {
@@ -52,6 +55,7 @@ const UsersTable = ({ users }: Props) => {
               <th className="px-4 py-2 whitespace-nowrap">שם</th>
               <th className="px-4 py-2 whitespace-nowrap">מקום עבודה</th>
               <th className="px-4 py-2 whitespace-nowrap">תפקיד</th>
+              <th className="px-4 py-2 whitespace-nowrap">פעולות</th>
             </tr>
           </thead>
           <tbody>
@@ -66,6 +70,16 @@ const UsersTable = ({ users }: Props) => {
                   }`}
                 >
                   {u.role}
+                </td>
+                <td
+                  onClick={() => {
+                    if (window.confirm('למחוק את המשתמש הזה?')) {
+                      deleteUser.mutate(u.id);
+                    }
+                  }}
+                  className="px-6 py-3 whitespace-nowrap"
+                >
+                  <Trash2 color="red" size={20} />
                 </td>
               </tr>
             ))}
