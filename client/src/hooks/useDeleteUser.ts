@@ -18,6 +18,7 @@ export const useDeleteUser = () => {
     onSuccess: () => {
       // מרענן את רשימת המשתמשים
       queryClient.invalidateQueries({ queryKey: ['adminDashboard'] });
+      queryClient.invalidateQueries({ queryKey: ['managerUsers'] });
     },
     onError: (error: any) => {
       console.error(

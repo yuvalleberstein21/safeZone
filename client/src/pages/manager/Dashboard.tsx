@@ -5,9 +5,18 @@ import RegisterModel from '../../components/RegisterModel';
 import StatsCards from '../../components/manager/StatsCards';
 import ReportFilters from '../../components/manager/ReportFilters';
 import ReportsTable from '../../components/manager/ReportsTable';
+import UsersTable from '../../components/admin/UsersTable';
+import { useManagerUsers } from '../../hooks/useManagerUsers';
 
 const Dashboard = () => {
   const { data: reports = [], isLoading, error } = useManagerReports();
+  const {
+    data: users = [],
+    isLoading: isLoadingUsers,
+    error: errorUsers,
+  } = useManagerUsers();
+
+  console.log(users);
   const [showRegisterModel, setShowRegisterModel] = useState(false);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -82,6 +91,7 @@ const Dashboard = () => {
         setEndDate={setEndDate}
       />
       <ReportsTable reports={displayReports} />
+      <UsersTable users={users} />
 
       {showRegisterModel && (
         <RegisterModel

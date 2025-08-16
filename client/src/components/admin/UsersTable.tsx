@@ -77,7 +77,7 @@ const UsersTable = ({ users }: Props) => {
                       deleteUser.mutate(u.id);
                     }
                   }}
-                  className="px-6 py-3 whitespace-nowrap"
+                  className="px-6 py-3 whitespace-nowrap cursor-pointer"
                 >
                   <Trash2 color="red" size={20} />
                 </td>
