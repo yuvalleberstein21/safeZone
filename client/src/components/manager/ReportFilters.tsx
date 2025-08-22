@@ -11,35 +11,43 @@ const ReportFilters = ({
   setEndDate,
 }: ReportFiltersProps) => (
   <div className="bg-white rounded-lg shadow mb-4">
-    <div className="flex justify-start gap-4 mx-4 py-4">
-      <div>
+    {/* עוטף את כל השורה */}
+    <div className="flex flex-col sm:flex-row justify-start items-center gap-4 mx-4 py-4">
+      {/* פילטר מתאריך */}
+      <div className="w-full sm:w-auto">
         <label className="block text-sm text-gray-700">מתאריך</label>
         <input
           type="date"
           value={startDate}
           onChange={(e) => setStartDate(e.target.value)}
-          className="border rounded px-2 py-1"
+          className="border rounded px-2 py-1 w-full sm:w-auto"
         />
       </div>
-      <div>
+
+      {/* פילטר עד תאריך */}
+      <div className="w-full sm:w-auto">
         <label className="block text-sm text-gray-700">עד תאריך</label>
         <input
           type="date"
           value={endDate}
           onChange={(e) => setEndDate(e.target.value)}
-          className="border rounded px-2 py-1"
+          className="border rounded px-2 py-1 w-full sm:w-auto"
         />
       </div>
+
+      {/* כפתור האיפוס */}
       {(startDate || endDate) && (
-        <button
-          onClick={() => {
-            setStartDate('');
-            setEndDate('');
-          }}
-          className="text-sm text-blue-600 hover:underline self-end"
-        >
-          איפוס סינון
-        </button>
+        <div className="w-full sm:w-auto flex justify-center sm:justify-start">
+          <button
+            onClick={() => {
+              setStartDate('');
+              setEndDate('');
+            }}
+            className="text-md bg-gray-100 px-4 py-2 rounded-md text-blue-600 hover:underline"
+          >
+            איפוס סינון
+          </button>
+        </div>
       )}
     </div>
   </div>

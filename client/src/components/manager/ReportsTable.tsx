@@ -43,7 +43,7 @@ const ReportsTable = ({ reports }: ReportsTableProps) => {
                 <td className="px-3 py-1 text-sm font-semibold text-gray-900">
                   {report.user_name}
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-4 whitespace-nowrap">
                   <span
                     className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                       report.is_safe
@@ -54,17 +54,17 @@ const ReportsTable = ({ reports }: ReportsTableProps) => {
                     {report.is_safe ? '✅ בטוח' : '🚨 לא בטוח'}
                   </span>
                 </td>
-                <td className="px-6 py-4 text-sm text-gray-900">
+                <td className="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">
                   {new Date(report.timestamp).toLocaleString('he-IL', {
                     dateStyle: 'short',
                     timeStyle: 'short',
                     timeZone: 'Asia/Jerusalem',
                   })}
                 </td>
-                <td className="px-6 py-4 text-sm text-gray-900">
+                <td className="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">
                   {report.area}
                 </td>
-                <td className="px-6 py-4 text-sm text-gray-900">
+                <td className="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">
                   {report.reason || '-'}
                 </td>
               </tr>

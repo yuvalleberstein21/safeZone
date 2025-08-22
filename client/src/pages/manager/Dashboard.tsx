@@ -77,7 +77,7 @@ const Dashboard = () => {
         יצירת עובד חדש
       </button>
 
-      <p className="text-md text-gray-500 mt-2 text-center mb-5">
+      <p className="text-md text-gray-500 mt-2 text-center mb-5" dir="ltr">
         {startDate || endDate
           ? `מציג דיווחים בין ${startDate || 'התחלה'} ל־${endDate || 'היום'}`
           : 'מציג דיווחים של היום'}
@@ -91,7 +91,7 @@ const Dashboard = () => {
         setEndDate={setEndDate}
       />
       <ReportsTable reports={displayReports} />
-      <UsersTable users={users} />
+      <UsersTable users={users} isLoading={isLoadingUsers} />
 
       {showRegisterModel && (
         <RegisterModel

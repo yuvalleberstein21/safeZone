@@ -2,12 +2,14 @@ import { Search, Trash2 } from 'lucide-react';
 import type { User } from '../../types/user';
 import { useEffect, useState } from 'react';
 import { useDeleteUser } from '../../hooks/useDeleteUser';
+import Loader from '../ui/Loader';
 
 type Props = {
   users: User[];
+  isLoading: boolean;
 };
 
-const UsersTable = ({ users }: Props) => {
+const UsersTable = ({ users, isLoading }: Props) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
 
@@ -29,7 +31,7 @@ const UsersTable = ({ users }: Props) => {
   );
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow">
+    <div className="bg-white p-4 mt-5 rounded-lg shadow">
       <h2 className="text-lg font-bold mb-4 text-gray-800">משתמשים</h2>
 
       {/* שדה חיפוש */}
@@ -58,32 +60,36 @@ const UsersTable = ({ users }: Props) => {
               <th className="px-4 py-2 whitespace-nowrap">פעולות</th>
             </tr>
           </thead>
-          <tbody>
-            {filteredUsers.map((u) => (
-              <tr key={u.id} className="border-t text-right even:bg-gray-100">
-                <td className="px-4 py-3 whitespace-nowrap">{u.id}</td>
-                <td className="px-4 py-3 whitespace-nowrap">{u.name}</td>
-                <td className="px-4 py-3 whitespace-nowrap">{u.area}</td>
-                <td
-                  className={`px-4 py-3 whitespace-nowrap font-medium ${
-                    u.role === 'manager' ? 'text-blue-600' : 'text-green-600'
-                  }`}
-                >
-                  {u.role}
-                </td>
-                <td
-                  onClick={() => {
-                    if (window.confirm('למחוק את המשתמש הזה?')) {
-                      deleteUser.mutate(u.id);
-                    }
-                  }}
-                  className="px-6 py-3 whitespace-nowrap cursor-pointer"
-                >
-                  <Trash2 color="red" size={20} />
-                </td>
-              </tr>
-            ))}
-          </tbody>
+          {isLoading ? (
+            <span>טוען משתמשים...</span>
+          ) : (
+            <tbody>
+              {filteredUsers.map((u) => (
+                <tr key={u.id} className="border-t text-right even:bg-gray-100">
+                  <td className="px-4 py-3 whitespace-nowrap">{u.id}</td>
+                  <td className="px-4 py-3 whitespace-nowrap">{u.name}</td>
+                  <td className="px-4 py-3 whitespace-nowrap">{u.area}</td>
+                  <td
+                    className={`px-4 py-3 whitespace-nowrap font-medium ${
+                      u.role === 'manager' ? 'text-blue-600' : 'text-green-600'
+                    }`}
+                  >
+                    {u.role}
+                  </td>
+                  <td
+                    onClick={() => {
+                      if (window.confirm('למחוק את המשתמש הזה?')) {
+                        deleteUser.mutate(u.id);
+                      }
+                    }}
+                    className="px-6 py-3 whitespace-nowrap cursor-pointer"
+                  >
+                    <Trash2 color="red" size={20} />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          )}
         </table>
       </div>
 
