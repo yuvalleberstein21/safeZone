@@ -9,6 +9,7 @@ export const useAlerts = () => {
       const response = await axios.get(`${BASE_URL}/admin/dashboard`, {
         withCredentials: true,
       });
+      console.log(response.data);
       return response.data;
     },
   });

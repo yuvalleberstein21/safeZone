@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
-import { getAllAlerts } from '../models/alertModel';
+import { getReportsWithUserInfoForAdmin } from '../models/alertModel';
 import { deleteUserById, findUserById, getAllUsers } from '../models/userModel';
 
 export const getAdminDashboardData = async (req: Request, res: Response) => {
   try {
     const users = await getAllUsers();
 
-    const alerts = await getAllAlerts();
+    const alerts = await getReportsWithUserInfoForAdmin();
 
     res.status(200).json({ users, alerts });
   } catch (error) {

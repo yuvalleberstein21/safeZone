@@ -6,6 +6,7 @@ import { useAlerts } from '../../hooks/useAlerts';
 import Loader from '../../components/ui/Loader';
 import RegisterModel from '../../components/modelCards/RegisterModel';
 import { Shield } from 'lucide-react';
+import ReportsTable from '../../components/manager/ReportsTable';
 
 const AdminDashboard = () => {
   const [showRegisterModel, setShowRegisterModel] = useState<boolean>(false);
@@ -45,6 +46,9 @@ const AdminDashboard = () => {
         <UsersTable users={data.users} />
       </div>
 
+      <div className="py-4">
+        <ReportsTable reports={alerts} />
+      </div>
       {showRegisterModel && (
         <RegisterModel
           setShowRegisterModel={setShowRegisterModel}

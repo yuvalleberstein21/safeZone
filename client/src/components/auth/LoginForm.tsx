@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import { useCurrentUser } from '../../hooks/useCurrentUser';
 import { toast } from 'react-hot-toast';
 import { isAxiosError } from 'axios';
-import { Link } from 'react-router-dom';
 
 const LoginForm = () => {
   const [loginForm, setLoginForm] = useState({ username: '', password: '' });
@@ -83,12 +82,6 @@ const LoginForm = () => {
               placeholder="הכנס סיסמה"
             />
           </div>
-          <span className="text-sm text-gray-600 flex justify-start">
-            שכחת סיסמא?
-            <Link className="text-blue-700 px-1" to={'/'}>
-              לחץ כאן
-            </Link>
-          </span>
           <button
             onClick={handleLogin}
             disabled={isPending}
