@@ -1,6 +1,6 @@
 import { AlertTriangle, Shield } from 'lucide-react';
 import { useState } from 'react';
-import ReportModel from '../components/ReportModel';
+import ReportModel from '../components/modelCards/ReportModel';
 import { getUserLocation } from '../utils/getUserLocation';
 import type { ReportData } from '../types/report';
 import { usePostReport } from '../hooks/usePostReport';
@@ -40,7 +40,7 @@ const Home = () => {
     }
   };
   return (
-    <div className="text-center py-2">
+    <div className="text-center py-2 mt-6">
       <h2 className="text-3xl font-bold text-gray-900 mb-2">
         איך אתה מרגיש/ה עכשיו?
       </h2>

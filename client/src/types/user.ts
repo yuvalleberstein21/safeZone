@@ -8,5 +8,6 @@ export interface User {
   name: string;
   role: 'manager' | 'employee' | 'admin';
   area?: string;
+  username: string;
   // אולי גם: email, fullName, etc
 }

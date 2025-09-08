@@ -1,7 +1,7 @@
 import { User } from 'lucide-react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
-import { useRegister } from '../hooks/useRegister';
+import { useRegister } from '../../hooks/useRegister';
 import { isAxiosError } from 'axios';
 
 type RegisterModelProps = {

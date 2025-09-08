@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useManagerReports } from '../../hooks/useManagerReports';
 import Loader from '../../components/ui/Loader';
-import RegisterModel from '../../components/RegisterModel';
+import RegisterModel from '../../components/modelCards/RegisterModel';
 import StatsCards from '../../components/manager/StatsCards';
 import ReportFilters from '../../components/manager/ReportFilters';
 import ReportsTable from '../../components/manager/ReportsTable';

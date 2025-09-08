@@ -1,9 +1,10 @@
-import { User, LogOut, MapPin, Shield } from 'lucide-react';
+import { User, LogOut, MapPin, Shield, UserLock } from 'lucide-react';
 
 import { useCurrentUser } from '../../hooks/useCurrentUser';
 import Loader from './Loader';
 import { useLogout } from '../../hooks/useLogout';
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const Header = () => {
   const { data: user, isLoading, error } = useCurrentUser();
@@ -26,6 +27,7 @@ const Header = () => {
     <div className="bg-white shadow-sm">
       {user?.role !== 'manager' ? (
         <div className="max-w-2xl mx-auto px-4 py-4 flex justify-between items-center">
+          {/* צד שמאל - פרטי משתמש */}
           <div className="flex items-center space-x-3">
             <User className="h-8 w-8 text-blue-600" />
             <div>
@@ -34,17 +36,24 @@ const Header = () => {
               </h1>
               <p className="flex items-center text-md text-gray-600">
                 מגדל העמק
-                <MapPin className="h-4 w-4" />
+                <MapPin className="h-4 w-4 ml-1" />
               </p>
             </div>
           </div>
-          <button
-            onClick={handleLogout}
-            disabled={isPending}
-            className="text-gray-600 hover:text-gray-900"
-          >
-            <LogOut className="h-5 w-5" />
-          </button>
+
+          {/* צד ימין - פרופיל + התנתקות */}
+          <div className="flex items-center space-x-4">
+            <Link to="/profile" className="text-gray-600 hover:text-gray-900">
+              <UserLock className="h-5 w-5" />
+            </Link>
+            <button
+              onClick={handleLogout}
+              disabled={isPending}
+              className="text-gray-600 hover:text-gray-900"
+            >
+              <LogOut className="h-5 w-5" />
+            </button>
+          </div>
         </div>
       ) : (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

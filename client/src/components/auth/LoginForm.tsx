@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useCurrentUser } from '../../hooks/useCurrentUser';
 import { toast } from 'react-hot-toast';
 import { isAxiosError } from 'axios';
+import { Link } from 'react-router-dom';
 
 const LoginForm = () => {
   const [loginForm, setLoginForm] = useState({ username: '', password: '' });
@@ -42,8 +43,8 @@ const LoginForm = () => {
     });
   };
   return (
-    <div className="flex justify-center items-center h-screen">
-      <div className="bg-white rounded-2xl shadow-xl p-8 w-full mx-4 max-w-md">
+    <div className="flex justify-center items-center h-screen login-bg">
+      <div className="bg-slate-50 rounded-2xl shadow-xl p-8 w-full mx-4 max-w-md">
         <div className="text-center mb-8">
           <Shield className="mx-auto h-16 w-16 text-blue-600 mb-4" />
           <h1 className="text-2xl font-bold text-gray-900 mb-2">
@@ -82,7 +83,12 @@ const LoginForm = () => {
               placeholder="הכנס סיסמה"
             />
           </div>
-
+          <span className="text-sm text-gray-600 flex justify-start">
+            שכחת סיסמא?
+            <Link className="text-blue-700 px-1" to={'/'}>
+              לחץ כאן
+            </Link>
+          </span>
           <button
             onClick={handleLogin}
             disabled={isPending}

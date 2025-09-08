@@ -1,9 +1,9 @@
 import { Send } from 'lucide-react';
 import { useState } from 'react';
-import { usePostReport } from '../hooks/usePostReport';
-import type { ReportData } from '../types/report';
+import { usePostReport } from '../../hooks/usePostReport';
+import type { ReportData } from '../../types/report';
 import axios from 'axios';
-import { getUserLocation } from '../utils/getUserLocation';
+import { getUserLocation } from '../../utils/getUserLocation';
 import toast from 'react-hot-toast';
 
 type ReportModelProps = {

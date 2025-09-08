@@ -5,6 +5,7 @@ import Dashboard from './pages/manager/Dashboard';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { RedirectIfLoggedIn } from './components/auth/RedirectIfLoggedIn';
 import AdminDashboard from './pages/admin/AdminDashboard';
+import Profile from './pages/Profile';
 
 export const routes: RouteObject[] = [
   {
@@ -19,6 +20,14 @@ export const routes: RouteObject[] = [
     path: '/login',
     element: <RedirectIfLoggedIn />,
     // element: <Login />,
+  },
+  {
+    path: '/profile',
+    element: (
+      <ProtectedRoute allowedRoles={['employee']}>
+        <Profile />
+      </ProtectedRoute>
+    ),
   },
   {
     path: '/manager-dashboard',

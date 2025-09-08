@@ -4,7 +4,7 @@ import ManagersOverview from '../../components/admin/ManagersOverview';
 import UsersTable from '../../components/admin/UsersTable';
 import { useAlerts } from '../../hooks/useAlerts';
 import Loader from '../../components/ui/Loader';
-import RegisterModel from '../../components/RegisterModel';
+import RegisterModel from '../../components/modelCards/RegisterModel';
 import { Shield } from 'lucide-react';
 
 const AdminDashboard = () => {

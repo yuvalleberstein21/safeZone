@@ -3,6 +3,10 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { createUser, findUserByUsername } from '../models/userModel';
 import { RegisterInput, User } from '../types/user';
+import { generateResetToken } from '../utils/token';
+import nodemailer from 'nodemailer';
+import pool from '../db/db';
+import crypto from 'crypto';
 
 export const registerUser = async (
   req: Request,
@@ -98,7 +102,12 @@ export const loginUser = async (
     }
 
     const token = jwt.sign(
-      { id: user.id, role: user.role, name: user.name },
+      {
+        id: user.id,
+        role: user.role,
+        name: user.name,
+        username: user.username,
+      },
       process.env.JWT_SECRET as string,
       { expiresIn: '7d' }
     );
@@ -133,4 +142,71 @@ export const logoutUser = (req: Request, res: Response) => {
   });
 
   res.status(200).json({ message: 'Logged out successfully' });
+};
+
+export const forgotPassword = async (req: Request, res: Response) => {
+  const { email } = req.body;
+
+  const user = await pool.query('SELECT * FROM users WHERE username=$1', [
+    email,
+  ]);
+
+  if (!user.rows[0]) {
+    return res.status(404).json({ message: 'משתמש לא נמצא' });
+  }
+
+  const { token, tokenHash } = generateResetToken();
+
+  await pool.query(
+    `UPDATE users 
+     SET reset_password_token=$1, reset_password_expires=$2 
+     WHERE id=$3`,
+    [tokenHash, new Date(Date.now() + 3600000), user.rows[0].id] // שעה תוקף
+  );
+
+  const resetUrl = `http://localhost:3000/reset-password?token=${token}`;
+
+  // שליחה במייל
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
+  });
+
+  await transporter.sendMail({
+    from: process.env.EMAIL_USER,
+    to: email,
+    subject: 'איפוס סיסמא',
+    html: `<p>לחץ על הקישור כדי לאפס סיסמא:</p>
+           <a href="${resetUrl}">${resetUrl}</a>`,
+  });
+
+  res.json({ message: 'קישור לאיפוס נשלח למייל' });
+};
+
+export const resetPassword = async (req: Request, res: Response) => {
+  const { token, password } = req.body;
+
+  const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+
+  const result = await pool.query(
+    `SELECT * FROM users 
+     WHERE reset_password_token=$1 
+       AND reset_password_expires > NOW()`,
+    [tokenHash]
+  );
+
+  if (!result.rows[0]) {
+    return res.status(400).json({ message: 'טוקן לא תקין או פג תוקף' });
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  await pool.query(
+    `UPDATE users 
+     SET password=$1, reset_password_token=NULL, reset_password_expires=NULL 
+     WHERE id=$2`,
+    [hashedPassword, result.rows[0].id]
+  );
+
+  res.json({ message: 'סיסמא עודכנה בהצלחה' });
 };
