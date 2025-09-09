@@ -23,6 +23,7 @@ export const useRegister = () => {
     onSuccess: () => {
       // ברגע שיש הצלחה — מבטל cache ומבקש שוב מהשרת
       queryClient.invalidateQueries({ queryKey: ['managerUsers'] });
+      queryClient.invalidateQueries({ queryKey: ['adminDashboard'] });
     },
   });
 };

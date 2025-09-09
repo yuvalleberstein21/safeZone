@@ -74,9 +74,6 @@ const ReportModel = ({ setShowReportModal }: ReportModelProps) => {
         </div>
 
         <div className="space-y-4">
-          {/* מיקום גאוגרפי - מבוטל כי לא בשימוש */}
-          {/* אפשר להוריד את החלק הזה אם רוצים */}
-
           {/* בחירת עיר */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -85,7 +82,7 @@ const ReportModel = ({ setShowReportModal }: ReportModelProps) => {
             <select
               value={selectedCity}
               onChange={(e) => setSelectedCity(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 outline-none focus:border-transparent"
             >
               <option value="">בחר עיר</option>
               <option value="תל אביב">תל אביב</option>
@@ -103,7 +100,7 @@ const ReportModel = ({ setShowReportModal }: ReportModelProps) => {
               type="text"
               value={detailedLocation}
               onChange={(e) => setDetailedLocation(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 outline-none focus:border-transparent"
               placeholder="לדוגמה: משרד החינוך קומה 4 אגף A"
             />
           </div>
@@ -116,7 +113,7 @@ const ReportModel = ({ setShowReportModal }: ReportModelProps) => {
             <textarea
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 outline-none focus:border-transparent"
               rows={3}
               placeholder="תאר/י בקצרה מה הבעיה..."
             />
